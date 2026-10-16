@@ -131,6 +131,41 @@ lumiere-store/
 └── data/products.json  商品数据（上架改这里）
 ```
 
-## 七、本地预览
+## 七、本地预览（三种方式任选）
 
-在任何电脑上，进入文件夹运行 `python3 -m http.server 8080`，浏览器打开 `http://localhost:8080` 即可预览（直接双击 index.html 也可以，但商品数据加载需浏览器允许本地文件）。
+**方式一：一键启动（推荐）**
+- Windows：双击 `start.bat`
+- macOS / Linux：终端里运行 `bash start.sh`
+
+脚本会自动检测 Python、自动打开浏览器、端口被占用时自动顺延，并打印出访问地址。
+
+**方式二：手动启动**
+在任何电脑上，进入文件夹运行：
+```bash
+python3 -m http.server 8080
+```
+然后浏览器打开 `http://localhost:8080`。
+
+**方式三：直接打开**
+直接双击 `index.html` 也能看视觉，但商品数据（`data/products.json`）在部分浏览器下会因本地文件安全策略加载失败，**建议用前两种方式**。
+
+---
+
+## 八、项目已初始化 Git 版本管理
+
+项目已经是一个 Git 仓库，首次提交已完成。改完内容后想留个存档：
+
+```bash
+git add -A
+git commit -m "说明这次改了什么"
+git log --oneline        # 查看历史
+```
+
+如果误改想回退：`git checkout -- 文件名`（放弃该文件的未提交修改）。
+
+想备份到云端（同时方便 Vercel 部署）：
+```bash
+git remote add origin https://github.com/你的用户名/lumiere-store.git
+git push -u origin main
+```
+
