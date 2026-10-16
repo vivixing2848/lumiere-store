@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品详情 — LUMIÈRE</title>
+<meta name="description" content="查看商品详情、面料成分、尺码指南与真实买家评价。新加坡直邮东南亚，支持货到付款。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="wrap">
+  <nav class="crumb" id="crumb">
+    <a href="index.html">首页</a>
+    <span class="sep">/</span>
+    <a href="shop.html">全部商品</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <div class="pdp" id="pdp">
+    <div style="padding:64px 0;text-align:center;color:var(--ink-3)">加载中…</div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="js/currency.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script>
+(async function () {
+  await initSite({});
+
+  const id = Util.param("id");
+  const all = await Store.products();
+  const p = id ? await Store.product(id) : null;
+
+  if (!p) {
+    document.getElementById("pdp").innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        ${Icons.bag}
+        <p>未找到该商品</p>
+        <a href="shop.html" class="btn btn--primary btn--sm" style="margin-top:16px">返回商品列表</a>
+      </div>`;
+    return;
+  }
+
+  document.title = p.title + " — LUMIÈRE";
+  document.getElementById("crumb").innerHTML = `
+    <a href="index.html">首页</a><span class="sep">/</span>
+    <a href="shop.html">全部商品</a><span class="sep">/</span>
+    <a href="shop.html?cat=${p.category}">${(await Store.categories()).find(c => c.id === p.category)?.name || ""}</a>
+    <span class="sep">/</span><span>${Util.esc(p.title)}</span>
+  `;
+
+  // 状态
+  const state = {
+    imgIndex: 0,
+    color: p.colors[0].name,
+    size: p.sizes.find((s) => !p.soldOutSizes.includes(s)) || p.sizes[0],
+    qty: 1,
+  };
+
+  const pct = Util.discountPct(p.price, p.compareAt);
+  const soldOut = p.stock === 0;
+
+  function render() {
+    const cat = { women: "女装", men: "男装", bags: "包袋", shoes: "鞋履", acce: "配饰" }[p.category] || "";
+
+    const thumbs = p.images.map((src, i) => `
+      <button class="gallery__thumb ${i === state.imgIndex ? "is-active" : ""}" data-img="${i}">
+        <img src="${src}" alt="${Util.esc(p.title)} 图 ${i + 1}" loading="lazy">
+      </button>
+    `).join("");
+
+    const colorOpts = p.colors.map((c) => `
+      <button class="color-opt ${state.color === c.name ? "is-active" : ""}" data-color="${Util.esc(c.name)}" title="${Util.esc(c.name)}" aria-label="${Util.esc(c.name)}">
+        <i style="background:${c.hex}"></i>
+      </button>
+    `).join("");
+
+    const sizeOpts = p.sizes.map((s) => {
+      const out = p.soldOutSizes.includes(s) || soldOut;
+      return `<button class="size-opt ${state.size === s ? "is-active" : ""}" data-size="${Util.esc(s)}" ${out ? "disabled" : ""}>${Util.esc(s)}</button>`;
+    }).join("");
+
+    const was = p.compareAt > p.price
+      ? `<span class="was">${Currency.format(p.compareAt)}</span><span class="off">省 ${pct}%</span>` : "";
+
+    document.getElementById("pdp").innerHTML = `
+      <!-- 图集 -->
+      <div class="gallery">
+        <div class="gallery__main">
+          <img src="${p.images[state.imgIndex]}" alt="${Util.esc(p.title)}" id="main-img">
+        </div>
+        <div class="gallery__thumbs">${thumbs}</div>
+      </div>
+
+      <!-- 购买面板 -->
+      <div class="buybox">
+        <div class="buybox__cat">${cat}</div>
+        <h1>${Util.esc(p.title)}</h1>
+        <p style="color:var(--ink-3);font-size:13.5px;margin-top:4px">${Util.esc(p.title_en)}</p>
+        <div class="buybox__meta">
+          ${Util.stars(p.rating, p.reviews)}
+          <span style="font-size:12.5px;color:var(--ink-3)">·</span>
+          <span style="font-size:12.5px;color:${soldOut ? "var(--danger)" : "var(--success)"};font-weight:500">
+            ${soldOut ? "暂时缺货" : `现货 ${p.stock} 件`}
+          </span>
+        </div>
+
+        <div class="buybox__price">
+          <span class="now">${Currency.format(p.price)}</span>
+          ${was}
+        </div>
+
+        <p class="buybox__desc">${Util.esc(p.desc)}</p>
+
+        <!-- 颜色 -->
+        <div class="opt">
+          <div class="opt__label">
+            <span>颜色：<span class="val" id="color-val">${Util.esc(state.color)}</span></span>
+          </div>
+          <div class="opt-row" id="color-row">${colorOpts}</div>
+        </div>
+
+        <!-- 尺码 -->
+        <div class="opt">
+          <div class="opt__label">
+            <span>尺码：<span class="val" id="size-val">${Util.esc(state.size)}</span></span>
+            <a href="#" id="size-guide-link">尺码指南</a>
+          </div>
+          <div class="opt-row" id="size-row">${sizeOpts}</div>
+        </div>
+
+        <!-- 数量 -->
+        <div class="opt">
+          <div class="opt__label"><span>数量</span></div>
+          <div class="qty">
+            <button id="qty-dec" aria-label="减少">−</button>
+            <input type="number" id="qty-input" value="${state.qty}" min="1" max="99" aria-label="数量">
+            <button id="qty-inc" aria-label="增加">+</button>
+          </div>
+        </div>
+
+        <!-- 操作 -->
+        <div class="buybox__actions">
+          <button class="btn btn--primary" id="btn-add" ${soldOut ? "disabled" : ""}>
+            ${soldOut ? "暂时缺货" : "加入购物车"}
+          </button>
+          <button class="btn btn--dark" id="btn-buy" ${soldOut ? "disabled" : ""}>立即购买</button>
+        </div>
+
+        <!-- 服务承诺 -->
+        <ul class="assure">
+          <li>${Icons.truck}<span><b>满 ${Currency.format(Shipping.FREE_THRESHOLD)} 免运费</b> · 标准配送 5–8 个工作日</span></li>
+          <li>${Icons.shield}<span><b>支持货到付款</b> · 马来西亚 / 菲律宾 / 越南全境可用</span></li>
+          <li>${Icons.refresh}<span><b>30 天无理由退换</b> · 尺码不合免费换一次</span></li>
+        </ul>
+
+        <!-- 折叠信息 -->
+        <div class="accordion">
+          <div class="acc-item is-open">
+            <button class="acc-head">面料与成分 <span>${Icons.chevronDown}</span></button>
+            <div class="acc-body"><div class="acc-body__inner">
+              <ul>
+                <li>${Util.esc(p.material)}</li>
+                <li>洗护方式：${Util.esc(p.care)}</li>
+                <li>产地：中国 / 东南亚协作工厂</li>
+              </ul>
+            </div></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">尺码指南 <span>${Icons.chevronDown}</span></button>
+            <div class="acc-body"><div class="acc-body__inner">
+              <p style="margin-bottom:10px">下表为亚洲版型实际测量值（单位：厘米），建议按胸围/腰围选择。</p>
+              <table class="size-table">
+                <thead><tr><th>尺码</th><th>胸围</th><th>腰围</th><th>衣长</th></tr></thead>
+                <tbody>
+                  <tr><td>XS</td><td>84</td><td>66</td><td>58</td></tr>
+                  <tr><td>S</td><td>88</td><td>70</td><td>60</td></tr>
+                  <tr><td>M</td><td>92</td><td>74</td><td>62</td></tr>
+                  <tr><td>L</td><td>96</td><td>78</td><td>64</td></tr>
+                  <tr><td>XL</td><td>100</td><td>82</td><td>66</td></tr>
+                  <tr><td>XXL</td><td>104</td><td>86</td><td>68</td></tr>
+                </tbody>
+              </table>
+            </div></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">配送与时效 <span>${Icons.chevronDown}</span></button>
+            <div class="acc-body"><div class="acc-body__inner">
+              <ul>
+                <li>新加坡仓出库，1–2 个工作日内发货</li>
+                <li>新加坡：2–3 天 · 马来西亚：3–5 天 · 泰国 / 越南：4–6 天</li>
+                <li>菲律宾 / 印尼：5–8 天（偏远岛屿可能顺延）</li>
+                <li>支持货到付款（部分国家/地区）</li>
+              </ul>
+            </div></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">退换货政策 <span>${Icons.chevronDown}</span></button>
+            <div class="acc-body"><div class="acc-body__inner">
+              <ul>
+                <li>签收后 30 天内可申请退换，商品需保持吊牌完整、未经穿着洗涤</li>
+                <li>尺码不合可在 30 天内免费换码一次</li>
+                <li>质量问题我们承担往返运费</li>
+                <li>个人卫生类商品（耳饰）拆封后不支持退换</li>
+              </ul>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    bind();
+  }
+
+  function bind() {
+    // 图片切换
+    document.querySelectorAll("[data-img]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.imgIndex = Number(b.dataset.img);
+        document.getElementById("main-img").src = p.images[state.imgIndex];
+        document.querySelectorAll("[data-img]").forEach((x) => x.classList.toggle("is-active", x === b));
+      });
+    });
+
+    // 颜色
+    document.querySelectorAll("[data-color]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.color = b.dataset.color;
+        document.getElementById("color-val").textContent = state.color;
+        document.querySelectorAll("[data-color]").forEach((x) => x.classList.toggle("is-active", x === b));
+      });
+    });
+
+    // 尺码
+    document.querySelectorAll("[data-size]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.size = b.dataset.size;
+        document.getElementById("size-val").textContent = state.size;
+        document.querySelectorAll("[data-size]").forEach((x) => x.classList.toggle("is-active", x === b));
+      });
+    });
+
+    // 数量
+    const input = document.getElementById("qty-input");
+    document.getElementById("qty-dec").addEventListener("click", () => {
+      state.qty = Math.max(1, state.qty - 1);
+      input.value = state.qty;
+    });
+    document.getElementById("qty-inc").addEventListener("click", () => {
+      state.qty = Math.min(99, state.qty + 1);
+      input.value = state.qty;
+    });
+    input.addEventListener("change", () => {
+      state.qty = Math.max(1, Math.min(99, parseInt(input.value, 10) || 1));
+      input.value = state.qty;
+    });
+
+    // 折叠面板
+    document.querySelectorAll(".acc-head").forEach((h) => {
+      h.addEventListener("click", () => h.parentElement.classList.toggle("is-open"));
+    });
+
+    // 加购
+    document.getElementById("btn-add").addEventListener("click", () => {
+      Cart.add(p, state.color, state.size, state.qty, p.images[0]);
+      Toast.show(`已加入购物车：${p.title} (${state.color}/${state.size})`);
+      CartDrawer.open();
+    });
+
+    // 立即购买
+    document.getElementById("btn-buy").addEventListener("click", () => {
+      Cart.add(p, state.color, state.size, state.qty, p.images[0]);
+      location.href = "checkout.html";
+    });
+
+    document.getElementById("size-guide-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      const items = document.querySelectorAll(".acc-item");
+      items[1].classList.add("is-open");
+      items[1].scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  render();
+
+  // 货币切换后重渲染价格
+  document.addEventListener("currency:change", () => render());
+})();
+</script>
+</body>
+</html>

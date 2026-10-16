@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUMIÈRE — 为热带气候设计的现代衣橱</title>
+<meta name="description" content="LUMIÈRE 精选天然面料服饰、包袋与配饰，新加坡直邮新加坡、马来西亚、泰国、菲律宾、印尼。满 S$80 免运费，支持货到付款。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="wrap hero__inner">
+    <div>
+      <span class="hero__eyebrow">🌿 热带友好面料 · 新加坡直邮</span>
+      <h1>为湿热气候<br>而生的<em>现代衣橱</em></h1>
+      <p class="hero__lead">
+        天然亚麻、真丝与有机棉，专为东南亚气候挑选。告别黏腻与闷热，
+        让每一天的穿着都清爽得体。
+      </p>
+      <div class="hero__cta">
+        <a href="shop.html" class="btn btn--primary">开始选购 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="shop.html?cat=women" class="btn btn--ghost">看女装系列</a>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat"><b>5 国</b><span>东南亚配送</span></div>
+        <div class="hero__stat"><b>4.8/5</b><span>平均评分</span></div>
+        <div class="hero__stat"><b>30 天</b><span>无理由退换</span></div>
+      </div>
+    </div>
+    <div class="hero__art">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1000&q=80" alt="LUMIÈRE 春夏系列">
+      <div class="hero__tag">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center">
+          <span style="color:var(--brand);font-size:17px">✦</span>
+        </div>
+        <div>
+          <b>新客立省 10%</b>
+          <span>优惠码 WELCOME10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 信任栏 ===== -->
+<div class="trust">
+  <div class="wrap">
+    <div class="trust__grid">
+      <div class="trust__item">
+        ${Icons.truck}
+        <div><b>满额免运费</b><span>标准配送 5–8 天达</span></div>
+      </div>
+      <div class="trust__item">
+        ${Icons.shield}
+        <div><b>正品保障</b><span>新加坡仓直发</span></div>
+      </div>
+      <div class="trust__item">
+        ${Icons.refresh}
+        <div><b>30 天退换</b><span>不合身免费换码</span></div>
+      </div>
+      <div class="trust__item">
+        ${Icons.headset}
+        <div><b>本地客服</b><span>WhatsApp 双语支持</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 品类 ===== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>按品类选购</h2>
+        <p>从通勤到度假，一次配齐</p>
+      </div>
+      <a href="shop.html" class="btn btn--ghost btn--sm">查看全部</a>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+</section>
+
+<!-- ===== 热卖商品 ===== -->
+<section class="section section--soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>本季热卖</h2>
+        <p>东南亚客户回购率最高的款式</p>
+      </div>
+      <a href="shop.html" class="btn btn--ghost btn--sm">全部商品</a>
+    </div>
+    <div class="grid-products" id="best-sellers"></div>
+  </div>
+</section>
+
+<!-- ===== 促销横幅 ===== -->
+<section class="section">
+  <div class="wrap">
+    <div class="banner">
+      <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1600&q=80" alt="限时优惠">
+      <div class="banner__body">
+        <h2>首次下单，立减 10%</h2>
+        <p>注册即得专属优惠码，全站通用。满 S$80 再享免运费，东南亚五国直邮到家。</p>
+        <a href="shop.html" class="btn">立即选购</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 新品 ===== -->
+<section class="section section--soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>新品上架</h2>
+        <p>每周三上新，会员优先购</p>
+      </div>
+      <a href="shop.html?sort=new" class="btn btn--ghost btn--sm">查看新品</a>
+    </div>
+    <div class="grid-products" id="new-arrivals"></div>
+  </div>
+</section>
+
+<!-- ===== 客户评价 ===== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>他们怎么说</h2>
+        <p>来自东南亚真实买家的反馈</p>
+      </div>
+    </div>
+    <div class="grid-reviews" id="reviews-grid"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="js/currency.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script>
+(async function () {
+  await initSite({ active: "index.html" });
+
+  // 修复静态 HTML 中的 ${Icons.xxx} 占位符（静态部分不经过 JS 模板求值）
+  document.querySelectorAll("body *").forEach((el) => {
+    for (const node of [...el.childNodes]) {
+      if (node.nodeType === 3 && node.textContent.includes("${Icons.")) {
+        const span = document.createElement("span");
+        span.innerHTML = node.textContent.replace(/\$\{Icons\.(\w+)\}/g, (_, k) => (window.Icons[k] || ""));
+        node.replaceWith(...span.childNodes);
+      }
+    }
+  });
+
+  const [products, categories, reviews] = await Promise.all([
+    Store.products(), Store.categories(), Store.reviews(),
+  ]);
+
+  // 品类卡片
+  const catImg = {
+    women: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
+    men: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=800&q=80",
+    bags: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+    shoes: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&q=80",
+    acce: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80",
+  };
+  document.getElementById("cat-grid").innerHTML = categories.slice(0, 3).map((c) => `
+    <a href="shop.html?cat=${c.id}" class="cat-card">
+      <img src="${catImg[c.id]}" alt="${c.name}" loading="lazy">
+      <div class="cat-card__body">
+        <h3>${c.name}</h3>
+        <p>${c.desc}</p>
+        <span class="arrow">立即选购 ${Icons.arrowRight}</span>
+      </div>
+    </a>
+  `).join("");
+
+  function renderGrid(elId, list) {
+    const el = document.getElementById(elId);
+    el.innerHTML = list.map(productCardHtml).join("");
+  }
+
+  // 热卖：按评价数排序
+  renderGrid("best-sellers", [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 8));
+
+  // 新品：带"新品"徽标的优先
+  const newOnes = [...products].sort((a, b) => (b.badge === "新品") - (a.badge === "新品")).slice(0, 4);
+  renderGrid("new-arrivals", newOnes);
+
+  // 评价
+  document.getElementById("reviews-grid").innerHTML = reviews.map((r) => `
+    <div style="background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:20px">
+      <div>${Util.stars(r.rating)}</div>
+      <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px;line-height:1.7">"${Util.esc(r.text)}"</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--brand-tint);color:var(--brand-dark);display:grid;place-items:center;font-size:13px;font-weight:600">${Util.esc(r.name[0])}</div>
+        <div>
+          <div style="font-size:13px;font-weight:500">${Util.esc(r.name)}</div>
+          <div style="font-size:11.5px;color:var(--ink-3)">${Util.esc(r.country)}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  // 货币切换后价格重渲染
+  document.addEventListener("currency:change", () => {
+    renderGrid("best-sellers", [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 8));
+    renderGrid("new-arrivals", newOnes);
+    const ann = document.querySelector(".announce strong");
+    if (ann) ann.textContent = Currency.format(Shipping.FREE_THRESHOLD);
+  });
+})();
+</script>
+</body>
+</html>

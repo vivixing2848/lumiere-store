@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下单成功 — LUMIÈRE</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="step is-done"><span class="step__num">✓</span><span>购物车</span></div>
+    <div class="step__line"></div>
+    <div class="step is-done"><span class="step__num">✓</span><span>填写信息</span></div>
+    <div class="step__line"></div>
+    <div class="step is-active"><span class="step__num">✓</span><span>完成下单</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="success" id="success">
+    <div class="success__icon">${Icons.checkCircle}</div>
+    <h1>下单成功</h1>
+    <p id="success-lead">感谢你的信任，订单已提交成功。</p>
+
+    <div class="success__box" id="order-box"></div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="shop.html" class="btn btn--primary">继续逛</a>
+      <a href="index.html" class="btn btn--ghost">回到首页</a>
+    </div>
+
+    <p style="margin-top:32px;font-size:13px;color:var(--ink-3)">
+      有问题？通过 WhatsApp <strong style="color:var(--ink-2)">+65 8123 4567</strong> 或邮件
+      <strong style="color:var(--ink-2)">hello@lumiere-store.com</strong> 联系我们，客服在线时间 9:00–21:00 (GMT+8)。
+    </p>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="js/currency.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script>
+(async function () {
+  await initSite({});
+
+  let order = null;
+  try {
+    order = JSON.parse(sessionStorage.getItem("lumiere_last_order") || "null");
+  } catch (e) { order = null; }
+
+  if (!order) {
+    document.getElementById("success").innerHTML = `
+      <div class="empty-state">
+        ${Icons.bag}
+        <p style="font-size:16px;color:var(--ink-2);margin-top:12px">暂无订单信息</p>
+        <a href="shop.html" class="btn btn--primary" style="margin-top:20px">去选购</a>
+      </div>`;
+    return;
+  }
+
+  document.getElementById("success-lead").textContent =
+    `${order.customer.firstName}，感谢你的信任！订单已提交成功。`;
+
+  const SHIP_NAME = { standard: "标准配送", express: "快速配送", pickup: "自提点取货" };
+  const PAY_NAME = { card: "信用卡 / 借记卡", ewallet: "电子钱包", bank: "银行转账 / PayNow", cod: "货到付款" };
+
+  // 送达预估
+  const days = { standard: [5, 8], express: [2, 3], pickup: [4, 6] }[order.shippingMethod] || [5, 8];
+  const from = new Date(Date.now() + days[0] * 864e5);
+  const to = new Date(Date.now() + days[1] * 864e5);
+  const fmt = (d) => `${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+
+  document.getElementById("order-box").innerHTML = `
+    <div class="row"><span>订单号</span><span>${Util.esc(order.orderNo)}</span></div>
+    <div class="row"><span>收货人</span><span>${Util.esc(order.customer.firstName)} ${Util.esc(order.customer.lastName)}</span></div>
+    <div class="row"><span>联系电话</span><span>${Util.esc(order.customer.phone)}</span></div>
+    <div class="row"><span>配送方式</span><span>${SHIP_NAME[order.shippingMethod] || order.shippingMethod}</span></div>
+    <div class="row"><span>预计送达</span><span>${fmt(from)} – ${fmt(to)}</span></div>
+    <div class="row"><span>支付方式</span><span>${PAY_NAME[order.paymentMethod] || order.paymentMethod}</span></div>
+    ${order.promo ? `<div class="row"><span>已用优惠</span><span>${Util.esc(order.promo)}</span></div>` : ""}
+    <div class="row" style="border-top:1px solid var(--line);margin-top:10px;padding-top:12px">
+      <span>应付总额</span>
+      <span style="font-size:17px;font-weight:600">${Currency.format(order.totals.total)}</span>
+    </div>
+  `;
+
+  // 订单确认邮件提示
+  Toast.show(`订单确认已发送至 ${order.customer.email}`);
+})();
+</script>
+</body>
+</html>
