@@ -1,0 +1,34 @@
+# Netlify 部署配置
+[build]
+  publish = "."
+
+# 静态资源长缓存（文件名带 hash 的才适合，这里保守设置）
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# 安全响应头
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 商品数据不缓存，改完立即生效
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# 404 兜底：不存在的路径回到首页
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
